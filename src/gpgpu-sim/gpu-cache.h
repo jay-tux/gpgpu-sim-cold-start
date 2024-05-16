@@ -980,6 +980,10 @@ class tag_array {
   void remove_pending_line(mem_fetch *mf);
   void inc_dirty() { m_dirty++; }
 
+  // To compute the number of DRAM accesses, we need to know if we're working with the LLC or not
+  static void toggle_LLC();
+  static bool is_LLC();
+
  protected:
   // This constructor is intended for use only from derived classes that wish to
   // avoid unnecessary memory allocation that takes place in the

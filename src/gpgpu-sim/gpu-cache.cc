@@ -235,6 +235,11 @@ void tag_array::remove_pending_line(mem_fetch *mf) {
   }
 }
 
+// global flag to indicate whether or not we're checking from the LLC 
+static bool is_llc = false;
+void tag_array::toggle_LLC() { is_llc = !is_llc; }
+bool tag_array::is_LLC() { return is_llc; }
+
 enum cache_request_status tag_array::probe(new_addr_type addr, unsigned &idx,
                                            mem_fetch *mf, bool is_write,
                                            bool probe_mode) const {
@@ -326,6 +331,9 @@ enum cache_request_status tag_array::probe(new_addr_type addr, unsigned &idx,
   } else
     abort();  // if an unreserved block exists, it is either invalid or
               // replaceable
+  
+  // If the request came from the LLC, log the memory request
+  if(is_LLC()) std::cout << "[COLD_START_DRAM_REQ]: " << addr << "\n";
 
   return MISS;
 }
